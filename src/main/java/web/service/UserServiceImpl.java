@@ -18,7 +18,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Autowired
     UserDao userDao;
 
-
     @Override
     public List<User> getAllUsers () {
         return userDao.getAllUsers();
@@ -52,7 +51,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername (String s) throws UsernameNotFoundException {
-        return userDao.getByName(s);
+        User user = userDao.getByName(s);
+        return user;
     }
 }
-

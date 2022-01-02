@@ -1,5 +1,6 @@
 package web.config;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -20,10 +21,8 @@ import web.config.handler.LoginSuccessHandler;
 @ComponentScan(value = "web")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-
     @Autowired
     private UserDetailsService userDetailsService;
-
 
     @Override
     public void configure (AuthenticationManagerBuilder auth) throws Exception {
@@ -34,7 +33,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure (HttpSecurity http) throws Exception {
         http.formLogin()
                 .successHandler(new LoginSuccessHandler())
-//
                 // указываем action с формы логина
                 .loginProcessingUrl("/login")
                 // Указываем параметры логина и пароля с формы логина
@@ -42,7 +40,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordParameter("j_password")
                 // даем доступ к форме логина всем
                 .permitAll();
-
         http.logout()
                 // разрешаем делать логаут всем
                 .permitAll()
@@ -58,6 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/login").anonymous()
                 .antMatchers("/user").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                 .antMatchers("/adduser").hasAnyAuthority("ROLE_ADMIN")
+
                 .antMatchers("/edituser/*").hasAnyAuthority("ROLE_ADMIN")
                 .antMatchers("/admin").hasAnyAuthority("ROLE_ADMIN");
     }
@@ -66,7 +64,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder () {
         return NoOpPasswordEncoder.getInstance();
     }
-
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider () {

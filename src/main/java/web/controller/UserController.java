@@ -1,6 +1,7 @@
 package web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,10 +16,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Controller
-
 public class UserController {
 
-    private final UserService userService;
+    private UserService userService;
     private final RoleService roleService;
 
     @Autowired
@@ -28,15 +28,10 @@ public class UserController {
     }
 
     @GetMapping("/admin")
-    public String getAllUsers (Model model) {
+    public String getAllUsers (Model model, @CurrentSecurityContext(expression = "authentication.principal") User principal) {
+        model.addAttribute("user", principal);
         model.addAttribute("users", userService.getAllUsers());
         return "admin";
-    }
-
-    @GetMapping("/addnew")
-    public String addUser (Model model) {
-        model.addAttribute("user", new User());
-        return "/adduser";
     }
 
     @PostMapping("/adduser")
@@ -44,73 +39,63 @@ public class UserController {
                             @RequestParam("city") String city,
                             @RequestParam("email") String email,
                             @RequestParam("password") String password,
-                            @RequestParam(required = false, name = "ROLE_ADMIN") String roleAdmin,
-                            @RequestParam(required = false, name = "ROLE_USER") String roleUser) {
+                            @RequestParam(required = false, name = "ROLE_ADMIN") Set<String> roleAdmin) {
 
         Set<Role> roles = new HashSet<>();
-
-        if (roleAdmin != null) {
+        if (roleAdmin.size() == 1 && roleAdmin.contains("ROLE_ADMIN")) {
             roles.add(roleService.getRoleByName("ROLE_ADMIN"));
-        }
-        if (roleUser != null) {
+        } else {
             roles.add(roleService.getRoleByName("ROLE_USER"));
         }
-        if (roleAdmin == null && roleUser == null) {
+        System.out.println(roleAdmin);
+        if (roleAdmin.size() == 2) {
+            roles.add(roleService.getRoleByName("ROLE_ADMIN"));
             roles.add(roleService.getRoleByName("ROLE_USER"));
         }
-
-
         User user = new User(username, city, email, password, roles);
         user.setRoles(roles);
-
-
         try {
             userService.addUser(user);
         } catch (Exception ignored) {
 
         }
+        roleAdmin.clear();
         return "redirect:/admin";
     }
 
-    @GetMapping("/edituser/{id}")
-    public String editUser (Model model,
-                            @PathVariable("id") int id) {
-        model.addAttribute("user", userService.getUser(id));
-        return "edituser";
-    }
-
-    @PostMapping("/{id}")
-    public String editUser (@ModelAttribute("user") User user, @PathVariable("id") int id,
-                            @RequestParam(required = false, name = "ROLE_ADMIN") String roleAdmin,
-                            @RequestParam(required = false, name = "ROLE_USER") String roleUser) {
+    @PostMapping("/update")
+    public String updateUser (@ModelAttribute("User") User user,
+                              @RequestParam("username") String username,
+                              @RequestParam("city") String city,
+                              @RequestParam("email") String email,
+                              @RequestParam("password") String password,
+                              @RequestParam(required = false, name = "ROLE_ADMIN") Set<String> roleAdmin) {
 
         Set<Role> roles = new HashSet<>();
 
-        if (roleAdmin != null) {
+        if (roleAdmin.size() == 1 && roleAdmin.contains("ROLE_ADMIN")) {
             roles.add(roleService.getRoleByName("ROLE_ADMIN"));
-        }
-        if (roleUser != null) {
+        } else {
             roles.add(roleService.getRoleByName("ROLE_USER"));
         }
-        if (roleAdmin == null && roleUser == null) {
+        System.out.println(roleAdmin);
+
+        if (roleAdmin.size() == 2) {
+            roles.add(roleService.getRoleByName("ROLE_ADMIN"));
             roles.add(roleService.getRoleByName("ROLE_USER"));
         }
 
-//        if (roleAdmin != null) {
-//            roles.add(new Role(2, roleAdmin));
-//
-//        }
-//        if (roleUser != null) {
-//            roles.add(new Role(1, roleUser));
-//        }
-//        if (roleAdmin == null && roleUser == null) {
-//            roles.add(new Role(1, roleUser));
-//        }
-
+        user.setUserName(username);
+        user.setCity(city);
+        user.setEmail(email);
+        user.setPassword(password);
         user.setRoles(roles);
-
+        try {
+            userService.addUser(user);
+        } catch (Exception ignored) {
+        }
+        user.setRoles(roles);
         userService.editUser(user);
-
         return "redirect:/admin";
     }
 

@@ -5,10 +5,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-// Для того, чтобы в дальнейшим использовать класс User в Spring Security, он должен реализовывать интерфейс UserDetails.
-// UserDetails можно представить, как адаптер между БД пользователей и тем что требуется Spring Security внутри SecurityContextHolder
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
@@ -35,10 +35,10 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "roles_id"))
     private Set<Role> roles;
 
-    public User () {
+    public User() {
     }
 
-    public User (int id, String username, String city, String email, String password, Set<Role> roles) {
+    public User(int id, String username, String city, String email, String password, Set<Role> roles) {
         this.username = username;
         this.password = password;
         this.email = email;
@@ -46,7 +46,7 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-    public User (String username, String city, String email, String password, Set<Role> roles) {
+    public User(String username, String city, String email, String password, Set<Role> roles) {
         this.username = username;
         this.password = password;
         this.email = email;
@@ -54,87 +54,87 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-    public int getId () {
+    public int getId() {
         return id;
     }
 
-    public void setId (int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public String getUserName () {
+    public String getUserName() {
         return username;
     }
 
-    public void setUserName (String username) {
+    public void setUserName(String username) {
         this.username = username;
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities () {
+    public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles;
     }
 
     @Override
-    public String getPassword () {
+    public String getPassword() {
         return password;
     }
 
     @Override
-    public String getUsername () {
+    public String getUsername() {
         return username;
     }
 
     @Override
-    public boolean isAccountNonExpired () {
+    public boolean isAccountNonExpired() {
         return true;
     }
 
     @Override
-    public boolean isAccountNonLocked () {
+    public boolean isAccountNonLocked() {
         return true;
     }
 
     @Override
-    public boolean isCredentialsNonExpired () {
+    public boolean isCredentialsNonExpired() {
         return true;
     }
 
     @Override
-    public boolean isEnabled () {
+    public boolean isEnabled() {
         return true;
     }
 
-    public void setPassword (String password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    public String getEmail () {
+    public String getEmail() {
         return email;
     }
 
-    public void setEmail (String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    public String getCity () {
+    public String getCity() {
         return city;
     }
 
-    public void setCity (String city) {
+    public void setCity(String city) {
         this.city = city;
     }
 
-    public Set<Role> getRoles () {
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles (Set<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 
     @Override
-    public String toString () {
+    public String toString() {
         return "User{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
@@ -144,8 +144,15 @@ public class User implements UserDetails {
                 ", roles=" + roles +
                 '}';
     }
+    @Transient
+    public String getStringRoles () {
+        return this.getRoles()
+                .stream()
+                .map(r -> r.getRole())
+                .map(s -> s.substring(s.indexOf('_') + 1))
+                .collect(Collectors.joining(" "));
 
-
+    }
 }
 
 
