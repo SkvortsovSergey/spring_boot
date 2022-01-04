@@ -52,12 +52,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .authorizeRequests()
-                .antMatchers("/login").anonymous()
                 .antMatchers("/user").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
-                .antMatchers("/adduser").hasAnyAuthority("ROLE_ADMIN")
-
-                .antMatchers("/edituser/*").hasAnyAuthority("ROLE_ADMIN")
-                .antMatchers("/admin").hasAnyAuthority("ROLE_ADMIN");
+                .antMatchers("/admin").hasAnyAuthority("ROLE_ADMIN")
+                .anyRequest().authenticated();
     }
 
     @Bean

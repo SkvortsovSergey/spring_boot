@@ -1,4 +1,6 @@
 package web.model;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
@@ -18,54 +20,57 @@ public class Role implements GrantedAuthority {
     @Column(name = "role")
     private String role;
 
-    @ManyToMany(fetch = FetchType.EAGER ,mappedBy = "roles")
+    @JsonIgnore
+    @ManyToMany(mappedBy = "roles")
     private Set<User> users;
 
-    public Role() {
+    public Role () {
     }
-
-    public Role(int id, String role) {
+    public Role (String role) {
+        this.role = role;
+    }
+    public Role (int id, String role) {
         this.id = id;
         this.role = role;
     }
 
-    public int getId() {
+    public int getId () {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId (int id) {
         this.id = id;
     }
 
-    public String getRole() {
+    public String getRole () {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole (String role) {
         this.role = role;
     }
 
-    public Set<User> getUsers() {
+    public Set<User> getUsers () {
         return users;
     }
 
-    public void setUsers(Set<User> users) {
+    public void setUsers (Set<User> users) {
         this.users = users;
     }
 
 
     @Override
-    public String getAuthority() {
+    public String getAuthority () {
         return role;
     }
 
     @Override
-    public String toString() {
+    public String toString () {
         return role;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals (Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Role role1 = (Role) o;
@@ -73,7 +78,7 @@ public class Role implements GrantedAuthority {
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode () {
         return Objects.hash(id, role, users);
     }
 }
