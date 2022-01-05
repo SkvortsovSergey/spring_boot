@@ -18,7 +18,7 @@ public class User implements UserDetails {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "username", unique = true)
+    @Column(name = "username")
     private String username;
 
     @Column(name = "password")
@@ -44,15 +44,16 @@ public class User implements UserDetails {
         this.email = email;
         this.city = city;
         this.roles = roles;
+        this.id = id;
     }
 
-    public User(String username, String city, String email, String password, Set<Role> roles) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.city = city;
-        this.roles = roles;
-    }
+//    public User(String username, String city, String email, String password, Set<Role> roles) {
+//        this.username = username;
+//        this.password = password;
+//        this.email = email;
+//        this.city = city;
+//        this.roles = roles;
+//    }
 
     public int getId() {
         return id;

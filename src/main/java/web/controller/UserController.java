@@ -30,78 +30,40 @@ public class UserController {
     @GetMapping("/admin")
     public String getAllUsers (Model model, @CurrentSecurityContext(expression = "authentication.principal") User principal) {
         model.addAttribute("user", principal);
+        model.addAttribute("roles", roleService.getAllRoles());
         model.addAttribute("users", userService.getAllUsers());
         return "admin";
     }
 
     @PostMapping("/adduser")
-    public String saveUser (@RequestParam("username") String username,
+    public String saveUser (@ModelAttribute("user") User user,
+                            @RequestParam("username") String username,
                             @RequestParam("city") String city,
                             @RequestParam("email") String email,
                             @RequestParam("password") String password,
-                            @RequestParam(required = false, name = "ROLE_ADMIN") Set<String> roleAdmin) {
-
-        Set<Role> roles = new HashSet<>();
-        if (roleAdmin.size() == 1 && roleAdmin.contains("ROLE_ADMIN")) {
-            roles.add(roleService.getRoleByName("ROLE_ADMIN"));
-        } else {
-            roles.add(roleService.getRoleByName("ROLE_USER"));
-        }
-        System.out.println(roleAdmin);
-        if (roleAdmin.size() == 2) {
-            roles.add(roleService.getRoleByName("ROLE_ADMIN"));
-            roles.add(roleService.getRoleByName("ROLE_USER"));
-        }
-        User user = new User(username, city, email, password, roles);
-        user.setRoles(roles);
-        try {
-            userService.addUser(user);
-        } catch (Exception ignored) {
-
-        }
-        roleAdmin.clear();
-        return "redirect:/admin";
-    }
-
-    @PostMapping("/update")
-    public String updateUser (@ModelAttribute("User") User user,
-                              @RequestParam("username") String username,
-                              @RequestParam("city") String city,
-                              @RequestParam("email") String email,
-                              @RequestParam("password") String password,
-                              @RequestParam(required = false, name = "ROLE_ADMIN") Set<String> roleAdmin) {
-
-        Set<Role> roles = new HashSet<>();
-
-        if (roleAdmin.size() == 1 && roleAdmin.contains("ROLE_ADMIN")) {
-            roles.add(roleService.getRoleByName("ROLE_ADMIN"));
-        } else {
-            roles.add(roleService.getRoleByName("ROLE_USER"));
-        }
-        System.out.println(roleAdmin);
-
-        if (roleAdmin.size() == 2) {
-            roles.add(roleService.getRoleByName("ROLE_ADMIN"));
-            roles.add(roleService.getRoleByName("ROLE_USER"));
-        }
-
+                            @RequestParam(value = "nameRoles") String [] nameRoles) {
         user.setUserName(username);
         user.setCity(city);
         user.setEmail(email);
         user.setPassword(password);
-        user.setRoles(roles);
-        try {
-            userService.addUser(user);
-        } catch (Exception ignored) {
-        }
-        user.setRoles(roles);
-        userService.editUser(user);
+        user.setRoles(roleService.getSetOfRoles(nameRoles));
+        userService.addUser(user);
         return "redirect:/admin";
     }
 
-    @GetMapping("/delete/{id}")
-    public String deleteUser (@PathVariable("id") int id) {
-        userService.deleteUser(userService.getUser(id));
+    @PostMapping("/update")
+    public String updateUser (@ModelAttribute("user") User user,
+                              @RequestParam("username") String username,
+                              @RequestParam("city") String city,
+                              @RequestParam("email") String email,
+                              @RequestParam("password") String password,
+                              @RequestParam(value = "nameRoles") String [] nameRoles) {
+        user.setUserName(username);
+        user.setCity(city);
+        user.setEmail(email);
+        user.setPassword(password);
+        user.setRoles(roleService.getSetOfRoles(nameRoles));
+        userService.editUser(user);
         return "redirect:/admin";
     }
 

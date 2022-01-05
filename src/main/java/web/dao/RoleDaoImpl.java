@@ -5,6 +5,7 @@ import web.model.Role;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.List;
 
 @Repository
 public class RoleDaoImpl implements RoleDao {
@@ -28,6 +29,11 @@ public class RoleDaoImpl implements RoleDao {
             System.out.println("Роли с таким именем не существует!");
         }
         return role;
+    }
+
+    @Override
+    public List<Role> getAllRoles () {
+        return entityManager.createQuery("from Role", Role.class).getResultList();
     }
 
     @Override
