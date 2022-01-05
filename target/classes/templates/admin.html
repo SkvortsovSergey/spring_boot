@@ -133,11 +133,13 @@
                                                            th:value="${user.getCity()}"/>
 
                                                     <p class="newUserP">Role</p>
-                                                    <select multiple class="form-control" style="height:3em;"
-                                                            name="ROLE_ADMIN">
-                                                        <option value="ROLE_ADMIN">ADMIN</option>
-                                                        <option value="ROLE_USER">USER</option>
-                                                        <option value="ROLE_USER" class="invisible" selected>nah
+                                                    <select multiple="multiple" class="form-control" style="height:3em;"
+                                                            name="nameRoles">
+                                                        <option th:each="role : ${roles}"
+                                                                th:value="${role.role}"
+                                                                th:text="${role.role}"
+                                                                th:selected="${role.role} == USER">
+
                                                         </option>
                                                     </select>
                                                 </div>
@@ -195,9 +197,10 @@
 
                                                     <p class="newUserP">Role</p>
                                                     <select multiple class="form-control" style="height:3em;"
-                                                            name="ROLE_ADMIN" readonly>
-                                                        <option value="ROLE_ADMIN">Admin</option>
-                                                        <option value="ROLE_USER">User</option>
+                                                            name="nameRoles" readonly>
+                                                        <option th:each="role : ${user.getRoles()}"
+                                                                th:value="${role.getRole()}"
+                                                                th:text="${role.getRole()}"></option>
                                                     </select>
                                                 </div>
 
@@ -220,8 +223,8 @@
                 <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
 
                     <!--Начало New User-->
-                    <form class="mx-auto text-center" method="POST" style="width: 20%; background: white; margin:1%"
-                          action="/adduser">
+                    <form class="mx-auto text-center" method="POST"  style="width: 20%; background: white; margin:1%"
+                          action="/adduser" >
                         <p class="newUserP">Username</p>
                         <input type="text" class="form-control" name="username" placeholder="Username"/>
 
@@ -235,9 +238,11 @@
                         <input type="text" class="form-control" name="password" placeholder="password"/>
 
                         <p class="newUserP">Role</p>
-                        <select multiple class="form-control" style="height:3em;" name="ROLE_ADMIN">
-                            <option value="ROLE_ADMIN">ADMIN</option>
-                            <option value="ROLE_USER">USER</option>
+                        <select multiple="multiple" class="form-control" style="height:3em;" name="nameRoles">
+                            <option th:each="role : ${roles}"
+                                    th:value="${role.role}"
+                                    th:text="${role.role}"
+                                    th:selected="${role.role} == USER"></option>
                         </select>
 
                         <input type="submit" class="btn btn-success d-block mx-auto" style="margin-top: 20px"
