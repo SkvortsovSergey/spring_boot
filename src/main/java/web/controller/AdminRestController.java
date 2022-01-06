@@ -24,9 +24,19 @@ public class AdminRestController {
         return userService.getAllUsers();
     }
 
+    @GetMapping("/users/{id}")
+    public User getUserById (@PathVariable int id) {
+        return userService.getUser(id);
+    }
+
     @DeleteMapping("/users/{id}")
-    public void deleteUserById(@PathVariable int id){
+    public void deleteUserById (@PathVariable int id) {
         userService.deleteUser(userService.getUser(id));
+    }
+
+    @PostMapping("/users")
+    public void addNewUser (@RequestBody User user) {
+        userService.addUser(user);
     }
 }
 
