@@ -128,14 +128,14 @@
                         <input type="text" class="form-control" id="newCity" name="newCity" placeholder="City"/>
 
                         <p class="newUserP">Email</p>
-                        <input type="text" class="form-control" name="newEmail" placeholder="Email"/>
+                        <input type="text" class="form-control" id="newEmail" name="newEmail" placeholder="Email"/>
 
                         <p class="newUserP">Password</p>
-                        <input type="text" class="form-control" name="newEmail" id="newPassword"
+                        <input type="text" class="form-control"  name="newEmail" id="newPassword"
                                placeholder="password"/>
 
                         <p class="newUserP">Role</p>
-                        <select multiple="multiple" class="form-control" style="height:3em;" id="newNameRoles"
+                        <select multiple="multiple" class="form-control" style="height:3em;" id="newRoles"
                                 name="newNameRoles">
                             <option th:each="role : ${roles}"
                                     th:value="${role.role}"
@@ -143,7 +143,7 @@
                                     th:selected="${role.role} == USER"></option>
                         </select>
 
-                        <button onclick="createNewUser()" class="btn btn-success d-block mx-auto"
+                        <button id="crNewUserButton" class="btn btn-success d-block mx-auto"
                                 style="margin-top: 20px">Add new user
                         </button>
                     </form>

@@ -4,7 +4,6 @@ function getUserTable() {
         res.json().then(data => {
             if (data.length > 0) {
                 let temp = ""
-console.log(data)
                 // start for loop
 
                 data.forEach((u) => {
@@ -58,6 +57,15 @@ fetch("/api/users/"+ ($('#modalId').val()),{method:"DELETE"})
     })
 }
 
+function stop () {
+    createNewUser()
+
+
+}
+let createNewUserButton = document.querySelector('#crNewUserButton')
+createNewUserButton.onclick = createNewUser()
+
+
  function createNewUser() {
     // let user = {
     //     username: document.getElementById('newUsername').value,
@@ -73,11 +81,11 @@ fetch("/api/users/"+ ($('#modalId').val()),{method:"DELETE"})
     //         'Accept': 'application/json',
     //         'Content-Type': 'application/json;charset=utf8'
     //     }, body: JSON.stringify(user)})
-    // //     .then(()=>{
-    // //     getUserTable()
-    // //     document.getElementById("newUserForm").reset()
-    // // })
-    // console.log(user)
+    //     .then(()=>{
+    //     getUserTable()
+    //     document.getElementById("newUserForm").reset()
+    // })
+
      let username = document.getElementById('newUsername').value;
      let password = document.getElementById('newPassword').value;
      let email = document.getElementById('newEmail').value;
