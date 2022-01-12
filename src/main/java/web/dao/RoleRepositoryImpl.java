@@ -5,11 +5,11 @@ import web.model.Role;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Repository
-public class RoleDaoImpl implements RoleDao {
-
+public class RoleRepositoryImpl implements RoleRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -19,7 +19,7 @@ public class RoleDaoImpl implements RoleDao {
 
 
     @Override
-    public Role getRoleByName (String name) {
+    public Role getByName (String name) {
         Role role = null;
         try {
             role = getEntityManager().createQuery("SELECT r FROM Role r WHERE r.role=:name", Role.class)
@@ -32,12 +32,12 @@ public class RoleDaoImpl implements RoleDao {
     }
 
     @Override
-    public List<Role> getAllRoles () {
-        return entityManager.createQuery("from Role", Role.class).getResultList();
+    public Set<Role> getAll () {
+        return entityManager.createQuery("SELECT r FROM Role r", Role.class).getResultStream().collect(Collectors.toSet());
     }
 
     @Override
-    public Role getRoleById (int id) {
+    public Role getRoleById (Integer id) {
         return getEntityManager().find(Role.class, id);
     }
 }

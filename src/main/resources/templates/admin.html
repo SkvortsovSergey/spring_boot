@@ -102,7 +102,7 @@
                                     <!-- Modal EditUser -->
                                     <div class="modal hide" th:attr="id='editModal'+${user.getId()}">
                                         <div class="modal-dialog modal-content">
-                                            <form method="POST" action="/update">
+                                            <form method="post" action="/update">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title">Edit User</h5>
                                                     <button type="button" class="close" data-dismiss="modal"
@@ -118,7 +118,7 @@
 
                                                     <p class="newUserP">User name</p>
                                                     <input type="text" class="form-control" name="username"
-                                                           th:value="${user.getUserName()}"/>
+                                                           th:value="${user.getUsername()}"/>
 
                                                     <p class="newUserP">Password</p>
                                                     <input type="text" class="form-control" name="password"
@@ -136,9 +136,9 @@
                                                     <select multiple="multiple" class="form-control" style="height:3em;"
                                                             name="nameRoles">
                                                         <option th:each="role : ${roles}"
-                                                                th:value="${role.role}"
-                                                                th:text="${role.role}"
-                                                                th:selected="${role.role} == USER">
+                                                                th:value="${role.getRole}"
+                                                                th:text="${role.getRole}"
+                                                                th:selected="${role.getRole} == USER">
 
                                                         </option>
                                                     </select>
@@ -176,23 +176,23 @@
                                                      style="background: white; width: 40%;">
 
                                                     <p class="newUserP">Id</p>
-                                                    <input type="text" class="form-control"
+                                                    <input type="text" class="form-control" name="id"
                                                            th:value="${user.getId()}" readonly/>
 
                                                     <p class="newUserP">Username</p>
-                                                    <input type="text" class="form-control"
-                                                           th:value="${user.getUserName()}" readonly/>
+                                                    <input type="text" class="form-control" name="username"
+                                                           th:value="${user.getUsername()}" readonly/>
 
                                                     <p class="newUserP">City</p>
-                                                    <input type="text" class="form-control"
+                                                    <input type="text" class="form-control" name="city"
                                                            th:value="${user.getCity()}" readonly/>
 
                                                     <p class="newUserP">Email</p>
-                                                    <input type="number" class="form-control"
+                                                    <input type="text" class="form-control" name="email"
                                                            th:value="${user.getEmail()}" readonly/>
 
                                                     <p class="newUserP">Password</p>
-                                                    <input type="password" class="form-control"
+                                                    <input type="password" class="form-control" name="password"
                                                            th:value="${user.getPassword()}" readonly/>
 
                                                     <p class="newUserP">Role</p>
@@ -240,9 +240,9 @@
                         <p class="newUserP">Role</p>
                         <select multiple="multiple" class="form-control" style="height:3em;" name="nameRoles">
                             <option th:each="role : ${roles}"
-                                    th:value="${role.role}"
-                                    th:text="${role.role}"
-                                    th:selected="${role.role} == USER"></option>
+                                    th:value="${role.getRole}"
+                                    th:text="${role.getRole}"
+                                    th:selected="${role.getRole} == USER"></option>
                         </select>
 
                         <input type="submit" class="btn btn-success d-block mx-auto" style="margin-top: 20px"

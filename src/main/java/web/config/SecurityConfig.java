@@ -1,7 +1,7 @@
 package web.config;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -19,10 +19,10 @@ import web.config.handler.LoginSuccessHandler;
 @Configuration
 @EnableWebSecurity
 @ComponentScan(value = "web")
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
     @Override
     public void configure (AuthenticationManagerBuilder auth) throws Exception {
@@ -53,6 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/login").anonymous()
+                .antMatchers("/").anonymous()
                 .antMatchers("/user").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                 .antMatchers("/adduser").hasAnyAuthority("ROLE_ADMIN")
 
