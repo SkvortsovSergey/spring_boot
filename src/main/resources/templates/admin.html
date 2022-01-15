@@ -5,23 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-            crossorigin="anonymous"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
-            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-            crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF"
-            crossorigin="anonymous"></script>
 </head>
 
 <body>
 <nav class="navbar navbar-dark bg-dark">
     <a class="navbar-brand" href="#">
-        <strong><span th:text="${user.email}"></span></strong> with roles: <span
-            th:text="${user.getStringRoles()}"></span></a>
+        <strong><span id="header-email"></span></strong> with roles: <span id="header-roles"
+            ></span></a>
     <a class="nav-link text-secondary " href="/logout"><h6>Logout</h6></a>
 </nav>
 
@@ -52,7 +43,7 @@
                        aria-controls="home" aria-selected="true">User Table</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                    <a class="nav-link" id="profile-tab" name="profile-tab" data-toggle="tab" href="#profile" role="tab"
                        aria-controls="profile" aria-selected="false">New User</a>
                 </li>
             </ul>
@@ -78,39 +69,7 @@
                             </thead>
 
                             <tbody id="all_users_table">
-                            <!--                            <tr th:each="user : ${users}">-->
-
-                            <!--                                <td th:text="${user.id}"/>-->
-                            <!--                                </td>-->
-                            <!--                                <td th:text="${user.username}"/>-->
-                            <!--                                </td>-->
-                            <!--                                <td th:text="${user.password}"/>-->
-                            <!--                                </td>-->
-                            <!--                                <td th:text="${user.email}"/>-->
-                            <!--                                </td>-->
-                            <!--                                <td th:text="${user.city}"/>-->
-                            <!--                                </td>-->
-                            <!--                                <td th:text="${user.getStringRoles()}"/>-->
-                            <!--                                </td>-->
-                            <!--                                <td>-->
-                            <!--                                    <button class="btn btn-info btn-sm" style="color:white"-->
-                            <!--                                            data-toggle="modal"-->
-                            <!--                                            th:attr="data-target='#editModal'+${user.getId()}">-->
-                            <!--                                        Edit-->
-                            <!--                                    </button>-->
-
-
-                            <!--                                </td>-->
-
-                            <!--                                <td>-->
-                            <!--                                    <button class="btn btn-danger btn-sm" style="color:white"-->
-                            <!--                                            data-toggle="modal"-->
-                            <!--                                            th:attr="data-target='#deleteModal'+${user.getId()}">-->
-                            <!--                                        Delete-->
-                            <!--                                    </button>-->
-
-                            <!--                                </td>-->
-                            <!--                            </tr>-->
+                            <!--тут будет таблица всех пользователей-->
                             </tbody>
                         </table>
                     </div>
@@ -119,7 +78,7 @@
                 <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
 
                     <!--Начало New User-->
-                    <form class="mx-auto text-center" id="newUserForm" style="width: 20%; background: white; margin:1%">
+                    <form class="mx-auto text-center" id="newUserForm" name="newUserForm" style="width: 20%; background: white; margin:1%">
                         <p class="newUserP">Username</p>
                         <input type="text" class="form-control" id="newUsername" name="newUsername"
                                placeholder="Username"/>
@@ -131,19 +90,19 @@
                         <input type="text" class="form-control" id="newEmail" name="newEmail" placeholder="Email"/>
 
                         <p class="newUserP">Password</p>
-                        <input type="text" class="form-control"  name="newEmail" id="newPassword"
+                        <input type="text" class="form-control" name="newEmail" id="newPassword"
                                placeholder="password"/>
 
                         <p class="newUserP">Role</p>
                         <select multiple="multiple" class="form-control" style="height:3em;" id="newRoles"
                                 name="newNameRoles">
-                            <option th:each="role : ${roles}"
-                                    th:value="${role.role}"
-                                    th:text="${role.role}"
-                                    th:selected="${role.role} == USER"></option>
+<!--                            <option th:each="role : ${roles}"-->
+<!--                                    th:value="${role.role}"-->
+<!--                                    th:text="${role.role}"-->
+<!--                                    th:selected="${role.role} == USER"></option>-->
                         </select>
 
-                        <button id="crNewUserButton" class="btn btn-success d-block mx-auto"
+                        <button id="crNewUserButton" name="crNewUserButton" class="btn btn-success d-block mx-auto"
                                 style="margin-top: 20px">Add new user
                         </button>
                     </form>
@@ -152,7 +111,7 @@
                 <div class="modal hide" tabindex="-1" id="editModal"
                      aria-labelledby="modalLabel" aria-hidden="true" role="dialog">
                     <div class="modal-dialog modal-content">
-                        <form id="editUserForm">
+                        <form id="editUserForm" name="editUserForm">
                             <div class="modal-header">
                                 <h5 class="modal-title">Edit User</h5>
                                 <button type="button" class="close" data-dismiss="modal"
@@ -164,27 +123,27 @@
                                  style="background: white; width : 40%">
                                 <p class="text-center newUserP">Id</p>
                                 <input type="number" class="form-control" name="eId"
-                                       th:value="${user.getId()}" readonly/>
+                                       id="editId" readonly/>
 
                                 <p class="newUserP">User name</p>
                                 <input type="text" class="form-control" name="eUsername"
-                                       th:value="${user.getUserName()}"/>
+                                       id="editUsername"/>
 
                                 <p class="newUserP">Password</p>
                                 <input type="text" class="form-control" name="ePassword"
-                                       th:value="${user.getPassword()}"/>
+                                       id="editPassword"/>
 
                                 <p class="newUserP">Email</p>
                                 <input type="text" class="form-control" name="eEmail"
-                                       th:value="${user.getEmail()}"/>
+                                       id="editEmail"/>
 
                                 <p class="newUserP">City</p>
                                 <input type="text" class="form-control" name="eCity"
-                                       th:value="${user.getCity()}"/>
+                                       id="editCity"/>
 
                                 <p class="newUserP">Role</p>
                                 <select multiple="multiple" class="form-control" style="height:3em;"
-                                        name="eNameRoles">
+                                        name="eNameRoles" id="editRoles">
 
                                 </select>
                             </div>
@@ -192,7 +151,7 @@
                                 <input type="button" class="btn btn-secondary closeButton"
                                        data-dismiss="modal" value="Close">
                                 <input type="submit" class="btn btn-primary" value="Edit"
-                                       id="updateButton">
+                                       id="updateButton" name="updateButton">
                             </div>
                         </form>
                     </div>
@@ -214,28 +173,28 @@
                                  style="background: white; width: 40%;">
 
                                 <p class="newUserP">Id</p>
-                                <input type="text" class="form-control"
+                                <input type="text" class="form-control" name="dId"
                                        id="modalId" readonly/>
 
                                 <p class="newUserP">Username</p>
-                                <input type="text" class="form-control"
+                                <input type="text" class="form-control" name="dUsername"
                                        id="modalUsername" readonly/>
 
                                 <p class="newUserP">City</p>
-                                <input type="text" class="form-control"
+                                <input type="text" class="form-control" name="dCity"
                                        id="modalCity" readonly/>
 
                                 <p class="newUserP">Email</p>
-                                <input type="number" class="form-control"
+                                <input type="text" class="form-control" name="dEmail"
                                        id="modalEmail" readonly/>
 
                                 <p class="newUserP">Password</p>
-                                <input type="password" class="form-control"
+                                <input type="password" class="form-control" name="dPassword"
                                        id="modalPassword" readonly/>
 
                                 <p class="newUserP">Role</p>
                                 <select multiple class="form-control" style="height:3em;"
-                                        id="modalRoles" name="nameRoles" readonly>
+                                        id="modalRoles" name="dRoles" readonly>
 
                                 </select>
                             </div>

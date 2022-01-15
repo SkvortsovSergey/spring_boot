@@ -21,9 +21,9 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Integer id;
 
-    @Column(name = "username", unique = true)
+    @Column(name = "username",unique = true)
     private String username;
 
     @Column(name = "password")
@@ -35,15 +35,25 @@ public class User implements UserDetails {
     @Column(name = "city")
     private String city;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(joinColumns = @JoinColumn(name = "users_id"),
+    @ManyToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "users_id"),
             inverseJoinColumns = @JoinColumn(name = "roles_id"))
-    private Set<Role> roles = new HashSet<>();
+    private Set<Role> roles;
+
+    public void addRole (Role role) {
+        roles.add(role);
+        role.getUsers().add(this);
+    }
+
+    public void removeRole (Role role) {
+        roles.remove(role);
+        role.getUsers().remove(this);
+    }
 
     public User () {
     }
 
-    public User (int id, String username, String password, String email, String city, Set<Role> roles) {
+    public User (Integer id, String username, String password, String email, String city, Set<Role> roles) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -52,67 +62,24 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-    public User (String username, String city, String email, String password, Set<Role> roles) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.city = city;
-        this.roles = roles;
-    }
-
-    public int getId () {
+    public Integer getId () {
         return id;
     }
 
-    public void setId (int id) {
+    public void setId (Integer id) {
         this.id = id;
     }
 
-    public String getUserName () {
-        return username;
-    }
-
-    public void setUserName (String username) {
-        this.username = username;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities () {
-        return roles;
-    }
-
-    @Override
-    public String getPassword () {
-        return password;
-    }
-
-    @Override
     public String getUsername () {
         return username;
     }
 
-    @Override
-    public boolean isAccountNonExpired () {
-        return true;
+    public void setUsername (String username) {
+        this.username = username;
     }
 
-    @Override
-    public boolean isAccountNonLocked () {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired () {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled () {
-        return true;
-    }
-
-    public void setPassword (String password) {
-        this.password = password;
+    public String getPassword () {
+        return password;
     }
 
     public String getEmail () {
@@ -140,6 +107,37 @@ public class User implements UserDetails {
     }
 
     @Override
+    public Collection<? extends GrantedAuthority> getAuthorities () {
+        return roles;
+    }
+
+
+    @Override
+    public boolean isAccountNonExpired () {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked () {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired () {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled () {
+        return true;
+    }
+
+    public void setPassword (String password) {
+        this.password = password;
+    }
+
+
+    @Override
     public String toString () {
         return "User{" +
                 "id=" + id +
@@ -155,7 +153,7 @@ public class User implements UserDetails {
     public String getStringRoles () {
         return this.getRoles()
                 .stream()
-                .map(r -> r.getRole())
+                .map(Role::getRole)
                 .map(s -> s.substring(s.indexOf('_') + 1))
                 .collect(Collectors.joining(" "));
 

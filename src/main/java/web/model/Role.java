@@ -1,10 +1,8 @@
 package web.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
-import java.util.Objects;
 import java.util.Set;
 
 // Этот класс реализует интерфейс GrantedAuthority, в котором необходимо переопределить только один метод getAuthority() (возвращает имя роли).
@@ -15,30 +13,28 @@ public class Role implements GrantedAuthority {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(name = "role")
     private String role;
 
-    @JsonIgnore
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;
 
     public Role () {
     }
-    public Role (String role) {
-        this.role = role;
-    }
-    public Role (int id, String role) {
+
+    public Role (Integer id, String role, Set<User> users) {
         this.id = id;
         this.role = role;
+        this.users = users;
     }
 
-    public int getId () {
+    public Integer getId () {
         return id;
     }
 
-    public void setId (int id) {
+    public void setId (Integer id) {
         this.id = id;
     }
 
@@ -58,27 +54,14 @@ public class Role implements GrantedAuthority {
         this.users = users;
     }
 
-
     @Override
-    public String getAuthority () {
+    public String getAuthority() {
         return role;
     }
 
     @Override
-    public String toString () {
+    public String toString() {
         return role;
     }
 
-    @Override
-    public boolean equals (Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Role role1 = (Role) o;
-        return id == role1.id && role.equals(role1.role) && users.equals(role1.users);
-    }
-
-    @Override
-    public int hashCode () {
-        return Objects.hash(id, role, users);
-    }
 }

@@ -5,21 +5,21 @@ import web.model.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Repository
-public class UserDaoImpl implements UserDao {
-
+public class UserRepositoryImpl implements UserRepository {
     @PersistenceContext
     EntityManager entityManager;
 
     @Override
-    public List<User> getAllUsers() {
-        return entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
+    public Set<User> getAll() {
+        return entityManager.createQuery("SELECT u FROM User u", User.class).getResultStream().collect(Collectors.toSet());
     }
 
     @Override
-    public User getUser(int id) {
+    public User getById(Integer id) {
         return entityManager.find(User.class, id);
     }
 
@@ -32,14 +32,17 @@ public class UserDaoImpl implements UserDao {
     public void deleteUser(User user) {
         entityManager.remove(entityManager.contains(user) ? user : entityManager.merge(user));
     }
-
+    @Override
+    public void deleteUser(Integer id) {
+        entityManager.remove(getById(id));
+    }
     @Override
     public void editUser(User user) {
         entityManager.merge(user);
     }
 
     @Override
-    public User getByName(String username) {
+    public User getByUsername(String username) {
         return entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class)
                 .setParameter("username", username).getSingleResult();
     }

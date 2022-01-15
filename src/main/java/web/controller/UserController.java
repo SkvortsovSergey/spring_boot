@@ -2,81 +2,89 @@ package web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.*;
+import web.dto.RoleDTO;
+import web.dto.UserDTO;
+import web.mappers.RoleMapper;
+import web.mappers.UserMapper;
 import web.model.User;
 import web.service.RoleService;
 import web.service.UserService;
 
+import java.util.Set;
+
 @Controller
 public class UserController {
 
-    private UserService userService;
-    private final RoleService roleService;
-
     @Autowired
-    public UserController (UserService userService, RoleService roleService) {
-        this.userService = userService;
-        this.roleService = roleService;
-    }
+    private UserService userService;
+    @Autowired
+    private UserMapper userMapper;
+    @Autowired
+    private RoleService roleService;
+    @Autowired
+    private RoleMapper roleMapper;
+
+
+//
+//    public UserController (UserService userService, UserMapper userMapper, RoleService roleService, RoleMapper roleMapper) {
+//        this.userService = userService;
+//        this.userMapper = userMapper;
+//        this.roleService = roleService;
+//        this.roleMapper = roleMapper;
+//    }
+//    private final RoleService roleService;
+//    private final UserMapper userMapper;
+
 
     @GetMapping("/admin")
     public String getAllUsers (Model model, @CurrentSecurityContext(expression = "authentication.principal") User principal) {
-        model.addAttribute("user", principal);
-        model.addAttribute("roles", roleService.getAllRoles());
-        model.addAttribute("users", userService.getAllUsers());
+        model.addAttribute("user", userMapper.toDTO(principal));
+//        model.addAttribute("roles", roleMapper.roleSetToDTO(roleService.getAllRolesSet()));
+//        model.addAttribute("users", userMapper.userSetToDTO(userService.getAllUsersSet()));
         return "admin";
     }
 
+
     @PostMapping("/adduser")
-    public String saveUser (@ModelAttribute("user") User user,
-                            @RequestParam("username") String username,
-                            @RequestParam("city") String city,
-                            @RequestParam("email") String email,
-                            @RequestParam("password") String password,
-                            @RequestParam(value = "nameRoles") String [] nameRoles) {
-        user.setUserName(username);
-        user.setCity(city);
-        user.setEmail(email);
-        user.setPassword(password);
-        user.setRoles(roleService.getSetOfRoles(nameRoles));
+    public String saveUser (@ModelAttribute("user") UserDTO userDTO,
+                            @RequestParam(value = "nameRoles") String[] nameRoles) {
+        Set<RoleDTO> set = roleMapper.roleSetToDTO(roleService.getSetOfRoles(nameRoles));
+        userDTO.setRoles(set);
+        User user = userMapper.fromDTO(userDTO);
         userService.addUser(user);
         return "redirect:/admin";
     }
 
     @PostMapping("/update")
-    public String updateUser (@ModelAttribute("user") User user,
-                              @RequestParam("username") String username,
-                              @RequestParam("city") String city,
-                              @RequestParam("email") String email,
-                              @RequestParam("password") String password,
-                              @RequestParam(value = "nameRoles") String [] nameRoles) {
-        user.setUserName(username);
-        user.setCity(city);
-        user.setEmail(email);
-        user.setPassword(password);
-        user.setRoles(roleService.getSetOfRoles(nameRoles));
+    public String updateUser (@ModelAttribute("user") UserDTO userDTO,
+                              @RequestParam(value = "nameRoles") Set<String> nameRoles) {
+        Set<RoleDTO> set = roleMapper.roleSetToDTO(roleService.getSetOfRoles(nameRoles));
+        userDTO.setRoles(set);
+        System.out.println(userDTO);
+        User user = userMapper.fromDTO(userDTO);
+        System.out.println(user);
         userService.editUser(user);
         return "redirect:/admin";
     }
 
     @GetMapping("/user")
-    public ModelAndView showUser () {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("user");
-        modelAndView.addObject("user", user);
-        return modelAndView;
+    public String showUser (Model model, @CurrentSecurityContext(expression = "authentication.principal") User principal) {
+        model.addAttribute("user", userMapper.toDTO(principal));
+        return "user";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteUser (@PathVariable("id") Integer id) {
+        userService.deleteUser(id);
+        return "redirect:/admin";
     }
 
     @GetMapping("/")
     public String login () {
         return "login";
     }
+
 }
