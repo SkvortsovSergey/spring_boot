@@ -61,5 +61,11 @@ public class AdminRestController {
         User user = userMapper.fromDTO(userDTO);
         userService.addUser(user);
     }
+
+    @PutMapping("/users")
+    public void updateUser (@RequestBody UserDTO userDTO) {
+        User user = userMapper.fromDTO(userDTO);
+        userService.editUser(user);
+    }
 }
 

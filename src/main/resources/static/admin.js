@@ -1,6 +1,10 @@
 let allRoles = [];
+//загрузка всех ролей
 getRoles();
+//загрузка текущего пользователя
 getPrincipal();
+// загрузка пользователей
+getUsers();
 
 // Получение всех пользователей
 async function getUsers() {
@@ -279,5 +283,3 @@ document.forms["editUserForm"].addEventListener("updateButton", e => {
     editUser(eid, eusername, epassword, eemail, ecity, eroles);
     reset();
 });
-// загрузка пользователей
-getUsers();
